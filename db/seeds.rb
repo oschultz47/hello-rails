@@ -29,7 +29,6 @@ more_movies = [
     release_date: '24-Mar-1972' }
 ]
 
-# clear out the existing movies
 Movie.delete_all
 
 more_movies.each do |movie|

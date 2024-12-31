@@ -1,28 +1,37 @@
 class MoviesController < ApplicationController
-  before_action :set_movie, only: %i[ show edit update destroy ]
+  before_action :set_movie, only: %i[show edit update destroy]  # This should work as intended
+  
+  ALLOWED_COLUMNS = %w[title release_date rating]
+  ALLOWED_DIRECTIONS = %w[asc desc]
 
-    ALLOWED_COLUMNS = %w[title release_date rating]
-    ALLOWED_DIRECTIONS = %w[asc desc]
-  
-    def index
-      # Retrieve or set default sorting parameters
-      sort_by = validate_column(params[:column]) || session[:sort_by] || 'title'
-      direction = validate_direction(params[:column] ? toggle_direction(sort_by) : session[:direction]) || 'asc'
-  
-      # Update session if sorting parameters are passed
-      if params[:column].present?
-        session[:sort_by] = sort_by
-        session[:direction] = direction
+  def index
+    # Retrieve or set default sorting parameters
+    sort_by = validate_column(params[:column]) || session[:sort_by] || 'title'
+    
+    # Handle sorting direction
+    if params[:column].present?
+      # Toggle direction when clicking on the same column
+      if session[:sort_by] == params[:column]
+        direction = session[:direction] == 'asc' ? 'desc' : 'asc'
+      else
+        direction = 'asc' # Default to 'asc' when switching to a new column
       end
-  
-      # Fetch movies sorted according to validated values
-      @movies = Movie.order(sort_by => direction)
-  
-      # Pass the current sort and direction to the view
-      @sort_by = sort_by
-      @direction = direction
+      
+      # Update session values with the new column and direction
+      session[:sort_by] = params[:column]
+      session[:direction] = direction
+    else
+      # If no column parameter is provided, use the session values
+      direction = session[:direction] || 'asc'
     end
-  
+
+    # Fetch movies sorted according to validated values
+    @movies = Movie.order(sort_by => direction)
+
+    # Pass the current sort and direction to the view
+    @sort_by = sort_by
+    @direction = direction
+  end
 
   # GET /movies/1 or /movies/1.json
   def show
@@ -75,26 +84,29 @@ class MoviesController < ApplicationController
     end
   end
 
+
+  
+
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_movie
-      @movie = Movie.find(params.expect(:id))
-    end
 
-    # Only allow a list of trusted parameters through.
-    def movie_params
-      params.expect(movie: [ :title, :rating, :description, :release_date ])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_movie
+    @movie = Movie.find(params.require(:id))  # Ensure we are finding the movie by ID
+  end
 
-    def validate_column(column)
-      ALLOWED_COLUMNS.include?(column) ? column : nil
-    end
+  def movie_params
+    date_params = params[:movie].permit(:release_day, :release_month, :release_year)
+    release_date = Date.new(date_params[:release_year].to_i, date_params[:release_month].to_i, date_params[:release_day].to_i) rescue nil
   
-    def validate_direction(direction)
-      ALLOWED_DIRECTIONS.include?(direction) ? direction : nil
-    end
+    params[:movie][:release_date] = release_date
+    params.require(:movie).permit(:title, :rating, :description, :release_date)
+  end
+
+  def validate_column(column)
+    ALLOWED_COLUMNS.include?(column) ? column : nil
+  end
   
-    def toggle_direction(current_column)
-      session[:sort_by] == current_column && session[:direction] == 'asc' ? 'desc' : 'asc'
-    end
+  def validate_direction(direction)
+    ALLOWED_DIRECTIONS.include?(direction) ? direction : nil
+  end
 end

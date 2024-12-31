@@ -27,8 +27,16 @@
   </div>
 
   <div>
-    <%= form.label :release_date, style: "display: block" %>
-    <%= form.text_field :release_date %>
+    <%= form.label :release_date, "Release Date", style: "display: block" %>
+
+    <label for="release_day">Day:</label>
+    <%= form.number_field :release_day, value: movie.release_date&.day, min: 1, max: 31 %>
+
+    <label for="release_month">Month:</label>
+    <%= form.select :release_month, Date::MONTHNAMES.compact.each_with_index.map { |month, i| [month, i + 1] }, selected: movie.release_date&.month %>
+
+    <label for="release_year">Year:</label>
+    <%= form.number_field :release_year, value: movie.release_date&.year, min: 1900, max: Time.current.year + 10 %>
   </div>
 
   <div>
