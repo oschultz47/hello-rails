@@ -11,11 +11,13 @@ module Rottenpotatoes
     # Initialize configuration defaults for originally generated Rails version.
     config.load_defaults 8.0
 
-    # Please, add to the `ignore` list any other `lib` subdirectories that do
-    # not contain `.rb` files, or that should not be reloaded or eager loaded.
-    # Common ones are `templates`, `generators`, or `middleware`, for example.
+    # Ignore specific subdirectories in the autoload or eager_load paths.
     config.autoload_lib(ignore: %w[assets tasks])
     config.assets.initialize_on_precompile = false
+
+    # Exclude the test/system directory from autoloading or eager loading
+    config.eager_load_paths -= [Rails.root.join('test/system').to_s]
+    config.autoload_paths -= [Rails.root.join('test/system').to_s]
 
     # Configuration for the application, engines, and railties goes here.
     #
