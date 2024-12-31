@@ -28,6 +28,9 @@ gem "solid_cache"
 gem "solid_queue"
 gem "solid_cable"
 
+
+gem 'pg' # for Heroku deployment
+
 # Reduces boot times through caching; required in config/boot.rb
 gem "bootsnap", require: false
 
@@ -49,9 +52,6 @@ group :development, :test do
 
   # Omakase Ruby styling [https://github.com/rails/rubocop-rails-omakase/]
   gem "rubocop-rails-omakase", require: false
-
-  # Use sqlite3 as the database for Active Record in development and test
-  gem "sqlite3"
 end
 
 group :development do
@@ -65,6 +65,4 @@ group :test do
   gem "selenium-webdriver"
 end
 
-group :production do
-  gem 'pg' # for Heroku deployment
-end
+
