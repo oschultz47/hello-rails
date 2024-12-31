@@ -16,8 +16,8 @@ module Rottenpotatoes
     config.assets.initialize_on_precompile = false
 
     # Exclude the test/system directory from autoloading or eager loading
-    config.eager_load_paths -= [Rails.root.join('test/system').to_s]
-    config.autoload_paths -= [Rails.root.join('test/system').to_s]
+    config.eager_load_paths -= [ Rails.root.join("test/system").to_s ]
+    config.autoload_paths -= [ Rails.root.join("test/system").to_s ]
 
     # Configuration for the application, engines, and railties goes here.
     #
