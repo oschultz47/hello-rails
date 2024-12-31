@@ -1,33 +1,28 @@
 class MoviesController < ApplicationController
   before_action :set_movie, only: %i[ show edit update destroy ]
 
-  # GET /movies or /movies.json
-  def index
-    # Retrieve sort parameters from session or set defaults if not present
-    sort_by = session[:sort_by] || 'title'
-    direction = session[:direction] || 'asc'
-
-    # If sorting parameters are passed (by clicking on a column), update the session
-    if params[:column].present?
-      # Toggle direction between 'asc' and 'desc' each time the same column is clicked
-      if session[:sort_by] == params[:column]
-        direction = (session[:direction] == 'asc' ? 'desc' : 'asc')
-      else
-        direction = 'asc'  # Default direction is 'asc' when a new column is sorted
+    ALLOWED_COLUMNS = %w[title release_date rating]
+    ALLOWED_DIRECTIONS = %w[asc desc]
+  
+    def index
+      # Retrieve or set default sorting parameters
+      sort_by = validate_column(params[:column]) || session[:sort_by] || 'title'
+      direction = validate_direction(params[:column] ? toggle_direction(sort_by) : session[:direction]) || 'asc'
+  
+      # Update session if sorting parameters are passed
+      if params[:column].present?
+        session[:sort_by] = sort_by
+        session[:direction] = direction
       end
-
-      # Update session values with new sorting parameters
-      session[:sort_by] = params[:column]
-      session[:direction] = direction
+  
+      # Fetch movies sorted according to validated values
+      @movies = Movie.order(sort_by => direction)
+  
+      # Pass the current sort and direction to the view
+      @sort_by = sort_by
+      @direction = direction
     end
-
-    # Fetch movies sorted according to session values
-    @movies = Movie.order(Arel.sql(session[:sort_by]) => Arel.sql(session[:direction]))
-
-    # Pass the current sort and direction to the view to highlight active column
-    @sort_by = session[:sort_by]
-    @direction = session[:direction]
-  end  
+  
 
   # GET /movies/1 or /movies/1.json
   def show
@@ -89,5 +84,17 @@ class MoviesController < ApplicationController
     # Only allow a list of trusted parameters through.
     def movie_params
       params.expect(movie: [ :title, :rating, :description, :release_date ])
+    end
+
+    def validate_column(column)
+      ALLOWED_COLUMNS.include?(column) ? column : nil
+    end
+  
+    def validate_direction(direction)
+      ALLOWED_DIRECTIONS.include?(direction) ? direction : nil
+    end
+  
+    def toggle_direction(current_column)
+      session[:sort_by] == current_column && session[:direction] == 'asc' ? 'desc' : 'asc'
     end
 end
