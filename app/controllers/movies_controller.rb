@@ -22,7 +22,7 @@ class MoviesController < ApplicationController
     end
 
     # Fetch movies sorted according to session values
-    @movies = Movie.order(session[:sort_by] => session[:direction])
+    @movies = Movie.order(Arel.sql(session[:sort_by]) => Arel.sql(session[:direction]))
 
     # Pass the current sort and direction to the view to highlight active column
     @sort_by = session[:sort_by]
