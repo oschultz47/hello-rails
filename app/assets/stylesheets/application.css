@@ -8,3 +8,72 @@
  *
  * Consider organizing styles into separate files for maintainability.
  */
+
+
+/* Add this CSS to application.css or application.scss */
+/* Highlight sorted columns */
+/* Make the table span the full width of the screen */
+table {
+    width: 100%; /* Make the table span the entire width */
+    border-collapse: collapse; /* Remove space between borders */
+  }
+  
+  /* Style for table headers */
+  th {
+    background-color: #f4f4f4; /* Light gray background */
+    padding: 12px 15px; /* Add some padding to the headers */
+    text-align: left; /* Align the text to the left */
+    border: 1px solid #ddd; /* Add a solid light gray border between columns */
+  }
+  
+  /* Style for table data cells */
+  td {
+    padding: 12px 15px; /* Add padding for table data cells */
+    border: 1px solid #ddd; /* Add a solid light gray border between rows */
+  }
+  
+  /* Highlight sorted columns */
+  th.sorted-asc {
+    background-color: #d3f4d3; /* Light green for ascending order */
+    font-weight: bold; /* Make the text bold */
+    color: #2e8b57; /* Green text color */
+  }
+  
+  th.sorted-desc {
+    background-color: #f4d3d3; /* Light red for descending order */
+    font-weight: bold; /* Make the text bold */
+    color: #b22222; /* Dark red text color */
+  }
+  
+  /* Default column headers (without sorting) */
+  th {
+    background-color: #f4f4f4; /* Light gray background */
+  }
+  
+  th a {
+    text-decoration: none; /* Remove underline from the links */
+  }
+  
+  th a:hover {
+    color: #003366; /* Darker blue on hover */
+  }
+  
+  /* Style the arrows */
+  th a {
+    display: inline-block;
+    padding-right: 5px;
+  }
+  
+  th.sorted-asc a, th.sorted-desc a {
+    font-weight: bold; /* Bold the text to make the arrow stand out */
+  }
+  
+  th a:hover {
+    color: #003366; /* Darker blue on hover */
+  }
+  
+  /* Style for alternate row colors */
+  tr:nth-child(even) {
+    background-color: #f9f9f9; /* Light gray background for even rows */
+  }
+    

@@ -5,12 +5,39 @@
 <h1>Movies</h1>
 
 <div id="movies">
-  <% @movies.each do |movie| %>
-    <%= render movie %>
-    <p>
-      <%= link_to "Show this movie", movie %>
-    </p>
-  <% end %>
+  <table>
+    <thead>
+      <tr>
+        <th class="<%= 'sorted-asc' if @sort_by == 'title' && @direction == 'asc' %> <%= 'sorted-desc' if @sort_by == 'title' && @direction == 'desc' %>">
+          <%= link_to "Title" + ( @sort_by == 'title' ? (@direction == 'asc' ? " ↑" : " ↓") : ""), movies_path(column: 'title') %>
+        </th>
+        <th class="<%= 'sorted-asc' if @sort_by == 'rating' && @direction == 'asc' %> <%= 'sorted-desc' if @sort_by == 'rating' && @direction == 'desc' %>">
+          <%= link_to "Rating" + ( @sort_by == 'rating' ? (@direction == 'asc' ? " ↑" : " ↓") : ""), movies_path(column: 'rating') %>
+        </th>
+        <th class="<%= 'sorted-asc' if @sort_by == 'release_date' && @direction == 'asc' %> <%= 'sorted-desc' if @sort_by == 'release_date' && @direction == 'desc' %>">
+          <%= link_to "Release Date" + ( @sort_by == 'release_date' ? (@direction == 'asc' ? " ↑" : " ↓") : ""), movies_path(column: 'release_date') %>
+        </th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @movies.each do |movie| %>
+        <tr>
+          <td><%= movie.title %></td>
+          <td><%= movie.rating %></td>
+          <td><%= movie.release_date %></td>
+          <td>
+            <%= link_to "Show this movie", movie %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="4" style="text-align: center;">
+          <%= link_to "New movie", new_movie_path %>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
 </div>
-
-<%= link_to "New movie", new_movie_path %>

@@ -3,8 +3,31 @@ class MoviesController < ApplicationController
 
   # GET /movies or /movies.json
   def index
-    @movies = Movie.all
-  end
+    # Retrieve sort parameters from session or set defaults if not present
+    sort_by = session[:sort_by] || 'title'
+    direction = session[:direction] || 'asc'
+
+    # If sorting parameters are passed (by clicking on a column), update the session
+    if params[:column].present?
+      # Toggle direction between 'asc' and 'desc' each time the same column is clicked
+      if session[:sort_by] == params[:column]
+        direction = (session[:direction] == 'asc' ? 'desc' : 'asc')
+      else
+        direction = 'asc'  # Default direction is 'asc' when a new column is sorted
+      end
+
+      # Update session values with new sorting parameters
+      session[:sort_by] = params[:column]
+      session[:direction] = direction
+    end
+
+    # Fetch movies sorted according to session values
+    @movies = Movie.order(session[:sort_by] => session[:direction])
+
+    # Pass the current sort and direction to the view to highlight active column
+    @sort_by = session[:sort_by]
+    @direction = session[:direction]
+  end  
 
   # GET /movies/1 or /movies/1.json
   def show
