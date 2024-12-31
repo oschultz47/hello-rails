@@ -1,28 +1,28 @@
 class MoviesController < ApplicationController
   before_action :set_movie, only: %i[show edit update destroy]  # This should work as intended
-  
+
   ALLOWED_COLUMNS = %w[title release_date rating]
   ALLOWED_DIRECTIONS = %w[asc desc]
 
   def index
     # Retrieve or set default sorting parameters
-    sort_by = validate_column(params[:column]) || session[:sort_by] || 'title'
-    
+    sort_by = validate_column(params[:column]) || session[:sort_by] || "title"
+
     # Handle sorting direction
     if params[:column].present?
       # Toggle direction when clicking on the same column
       if session[:sort_by] == params[:column]
-        direction = session[:direction] == 'asc' ? 'desc' : 'asc'
+        direction = session[:direction] == "asc" ? "desc" : "asc"
       else
-        direction = 'asc' # Default to 'asc' when switching to a new column
+        direction = "asc" # Default to 'asc' when switching to a new column
       end
-      
+
       # Update session values with the new column and direction
       session[:sort_by] = params[:column]
       session[:direction] = direction
     else
       # If no column parameter is provided, use the session values
-      direction = session[:direction] || 'asc'
+      direction = session[:direction] || "asc"
     end
 
     # Fetch movies sorted according to validated values
@@ -85,7 +85,7 @@ class MoviesController < ApplicationController
   end
 
 
-  
+
 
   private
 
@@ -97,7 +97,7 @@ class MoviesController < ApplicationController
   def movie_params
     date_params = params[:movie].permit(:release_day, :release_month, :release_year)
     release_date = Date.new(date_params[:release_year].to_i, date_params[:release_month].to_i, date_params[:release_day].to_i) rescue nil
-  
+
     params[:movie][:release_date] = release_date
     params.require(:movie).permit(:title, :rating, :description, :release_date)
   end
@@ -105,7 +105,7 @@ class MoviesController < ApplicationController
   def validate_column(column)
     ALLOWED_COLUMNS.include?(column) ? column : nil
   end
-  
+
   def validate_direction(direction)
     ALLOWED_DIRECTIONS.include?(direction) ? direction : nil
   end
